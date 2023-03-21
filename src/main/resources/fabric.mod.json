@@ -1,35 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "notebot",
   "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "NoteBot",
+  "description": "A mod plays noteblock nicely for you!",
   "authors": [
-    "Me!"
+    "Nat1an"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://nat1an.xyz/",
+    "sources": "https://github.com/Nat1anWasTaken/NoteBot"
   },
-
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
+  "icon": "assets/notebot/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "xyz.nat1an.notebot.NoteBot"
     ]
   },
-  "mixins": [
-    "modid.mixins.json"
-  ],
-
+  "mixins": [],
   "depends": {
     "fabricloader": ">=0.14.17",
     "fabric-api": "*",
-    "minecraft": "~1.19.4",
+    "minecraft": ">1.19",
     "java": ">=17"
   },
   "suggests": {
