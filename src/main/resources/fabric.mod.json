@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "xyz.nat1an.notebot.NoteBot"
+      "xyz.nat1an.notebot.Notebot"
     ]
   },
   "mixins": [],
