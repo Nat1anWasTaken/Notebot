@@ -21,7 +21,7 @@ public class SongSuggestionProvider implements SuggestionProvider<ServerCommandS
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
         // TODO: Song search
-        String keyword = builder.getInput();  // This is not working yet. The keyword must be song name instead of whole command.
+        String keyword = builder.getInput().substring(builder.getStart());
 
         for (String f : getSongs(keyword)) {
             builder.suggest(f);

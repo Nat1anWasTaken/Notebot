@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.nat1an.notebot.utils.NotebotFileManager;
 
 public class Notebot implements ModInitializer {
     // This logger is used to write text to the console and the log file.
@@ -19,6 +20,9 @@ public class Notebot implements ModInitializer {
         // Proceed with mild caution.
 
         LOGGER.info("Hello Fabric world!");
+
+        NotebotFileManager.init();
+
         ModRegistries.registerModStuff();
     }
 }

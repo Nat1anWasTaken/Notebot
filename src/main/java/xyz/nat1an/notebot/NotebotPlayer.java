@@ -153,13 +153,15 @@ public class NotebotPlayer {
                     break;
                 }
 
-                mc.player.sendMessage(Text.literal("Now Playing: \u00a7a" + song.filename));
             } else if (loop) {
                 timer = -10;
             }
         }
 
-        // Play Noteblocks
+        if (timer == -10) {
+            mc.player.sendMessage(Text.literal("Now Playing: \u00a7a" + song.filename));
+        }
+
         timer++;
 
         Collection<Note> curNotes = song.notes.get(timer);
