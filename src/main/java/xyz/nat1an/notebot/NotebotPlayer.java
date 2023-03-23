@@ -82,7 +82,7 @@ public class NotebotPlayer {
 
         int required = song.requirements.size();
         if (required > blockPitches.size()) {
-            mc.player.sendMessage(Text.literal("Mapping Error: Missing " + (required - blockPitches.size()) + " Noteblocks"));
+            mc.player.sendMessage(Text.literal("§6Warning: Missing §c" + (required - blockPitches.size()) + " §6Noteblocks"));
         }
     }
 
@@ -118,11 +118,11 @@ public class NotebotPlayer {
                     trail.add(song.filename);
 
                     if (trail.size() > autoPlayTrailLength) {
-                        mc.player.sendMessage(Text.literal("The trail is full. Cleaning..."));
+                        mc.player.sendMessage(Text.literal("§6The trail is full. Cleaning..."));
                         trail.clear();
                         trail.add(song.filename);
                     }
-                    mc.player.sendMessage(Text.literal("The trail is now: " + trail.toString()));
+                    mc.player.sendMessage(Text.literal("§6The trail is now: §c" + trail.toString()));
                 }
 
                 int retryTimes = 0;
@@ -130,7 +130,7 @@ public class NotebotPlayer {
                 while (true) {
                     retryTimes++;
                     if (retryTimes > 20) {
-                        mc.player.sendMessage(Text.literal("Cannot find any song matches the condition. Disabling notebot..."));
+                        mc.player.sendMessage(Text.literal("§cCannot find any song matches the condition. Disabling notebot..."));
                         playing = false;
                     }
 
@@ -146,7 +146,7 @@ public class NotebotPlayer {
 
                     if (autoPlayAntiDuplicate) {
                         if (trail.contains(song.filename)) {
-                            mc.player.sendMessage(Text.literal("This song is played before. Picking a new one..."));
+                            mc.player.sendMessage(Text.literal("§6This song is played before. Picking a new one..."));
                             continue;
                         }
                     }
@@ -159,7 +159,7 @@ public class NotebotPlayer {
         }
 
         if (timer == -10) {
-            mc.player.sendMessage(Text.literal("Now Playing: \u00a7a" + song.filename));
+            mc.player.sendMessage(Text.literal("Now Playing: §a" + song.filename));
         }
 
         timer++;

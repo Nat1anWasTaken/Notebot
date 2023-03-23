@@ -33,13 +33,13 @@ public class NotebotInfoCommand {
     public static String listRequirements(NotebotPlayer.Song song) {
         StringBuilder result = new StringBuilder();
 
-        result.append("Song: ").append(song.name);
+        result.append("§6Song: §c").append(song.name);
 
         for (Map.Entry<Instrument, ItemStack> e : NotebotUtils.INSTRUMENT_TO_ITEM.entrySet()) {
             int count = (int) song.requirements.stream().filter(n -> n.instrument == e.getKey().ordinal()).count();
 
             if (count != 0) {
-                result.append("\n- ").append(e.getValue().getName().getString()).append(": ").append(count);
+                result.append("\n§6- §e").append(e.getValue().getName().getString()).append(": §a").append(count);
             }
         }
 
