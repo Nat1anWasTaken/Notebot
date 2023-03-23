@@ -41,21 +41,21 @@ public class NotebotPlayer {
     private static int timer = -10;
     private static int tuneDelay = 0;
 
-    public static void loadSong() {
+    public static boolean loadSong() {
         blockPitches.clear();
 
         try {
             if (!mc.interactionManager.getCurrentGameMode().isSurvivalLike()) {
                 mc.player.sendMessage(Text.literal("§cNot in Survival mode!"));
 
-                return;
+                return false;
             } else if (song == null) {
                 mc.player.sendMessage(Text.literal("§6No Song Loaded!, Use §c/notebot §6select to select a song."));
 
-                return;
+                return false;
             }
         } catch (NullPointerException e) {
-            return;
+            return false;
         }
 
         timer = -10;
@@ -81,9 +81,12 @@ public class NotebotPlayer {
         }
 
         int required = song.requirements.size();
+
         if (required > blockPitches.size()) {
             mc.player.sendMessage(Text.literal("§6Warning: Missing §c" + (required - blockPitches.size()) + " §6Noteblocks"));
         }
+
+        return true;
     }
 
     public static Instrument getInstrument(BlockPos pos) {

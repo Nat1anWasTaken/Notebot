@@ -31,7 +31,7 @@ public class NotebotLoadCommand {
     }
 
     private static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        context.getSource().sendMessage(Text.literal("§6Loading 7c" + context.getArgument("song", String.class) + " §6..."));
+        context.getSource().sendMessage(Text.literal("§6Loading §c" + context.getArgument("song", String.class) + " §6..."));
 
         song = NotebotUtils.parse(
             NotebotFileManager.getDir().resolve(
@@ -40,8 +40,6 @@ public class NotebotLoadCommand {
         );
 
         context.getSource().sendMessage(Text.literal(listRequirements(song)));
-
-        NotebotPlayer.loadSong();
 
         context.getSource().sendMessage(Text.literal("§6Loaded the song!"));
 

@@ -26,6 +26,10 @@ public class NotebotPlayCommand {
             return 0;
         }
 
+        if (!NotebotPlayer.loadSong()) {
+            return 0;
+        }
+
         NotebotPlayer.playing = true;
 
         return 1;
