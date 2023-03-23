@@ -159,7 +159,7 @@ public class NotebotPlayer {
         }
 
         if (timer == -10) {
-            mc.player.sendMessage(Text.literal("Now Playing: §a" + song.filename));
+            mc.player.sendMessage(Text.literal("§6Now Playing: §a" + song.filename));
         }
 
         timer++;
