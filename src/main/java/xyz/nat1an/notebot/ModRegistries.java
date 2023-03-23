@@ -1,8 +1,7 @@
 package xyz.nat1an.notebot;
 
-import com.mojang.brigadier.Command;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import xyz.nat1an.notebot.commands.NotebotInfoCommand;
 import xyz.nat1an.notebot.commands.NotebotLoadCommand;
 import xyz.nat1an.notebot.commands.NotebotPlayCommand;
@@ -15,10 +14,10 @@ public class ModRegistries {
     }
 
     private static void registerCommands() {
-        CommandRegistrationCallback.EVENT.register(NotebotInfoCommand::register);
-        CommandRegistrationCallback.EVENT.register(NotebotLoadCommand::register);
-        CommandRegistrationCallback.EVENT.register(NotebotPlayCommand::register);
-        CommandRegistrationCallback.EVENT.register(NotebotStopCommand::register);
+        ClientCommandRegistrationCallback.EVENT.register(NotebotInfoCommand::register);
+        ClientCommandRegistrationCallback.EVENT.register(NotebotLoadCommand::register);
+        ClientCommandRegistrationCallback.EVENT.register(NotebotPlayCommand::register);
+        ClientCommandRegistrationCallback.EVENT.register(NotebotStopCommand::register);
     }
 
     private static void registerEvents() {

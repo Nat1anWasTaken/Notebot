@@ -5,8 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import xyz.nat1an.notebot.utils.NotebotFileManager;
 
 import java.util.Arrays;
@@ -16,10 +15,10 @@ import java.util.concurrent.CompletableFuture;
 
 
 // TODO: Song caching to make it faster
-public class SongSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+public class SongSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+    public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
         // TODO: Song search
         String keyword = builder.getInput().substring(builder.getStart());
 

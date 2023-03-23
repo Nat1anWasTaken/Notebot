@@ -106,10 +106,23 @@ public class NotebotPlayer {
         // Tune Noteblocks
         for (Entry<BlockPos, Integer> e : blockPitches.entrySet()) {
             int note = getNote(e.getKey());
-            if (note == -1) continue;
+            if (note == -1)
+                continue;
 
             if (note != e.getValue()) {
-                mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(Vec3d.ofCenter(e.getKey(), 1), Direction.UP, e.getKey(), true));
+                if (tuneDelay < 5) {
+                    tuneDelay++;
+                    return;
+                }
+
+                int neededNote = e.getValue() < note ? e.getValue() + 25 : e.getValue();
+                int reqTunes = Math.min(25, neededNote - note);
+                for (int i = 0; i < reqTunes; i++)
+                    mc.interactionManager.interactBlock(mc.player,
+                        Hand.MAIN_HAND, new BlockHitResult(Vec3d.ofCenter(e.getKey(), 1), Direction.UP, e.getKey(), true));
+
+                tuneDelay = 0;
+
                 return;
             }
         }
@@ -142,7 +155,7 @@ public class NotebotPlayer {
 
                     song = NotebotUtils.parse(path);
 
-//                    TODO: Make this filter configurable
+                    // TODO: Make this filter configurable
                     if (autoPlayFilter) {
                         if (!song.filename.startsWith("!")) continue;
                     }
