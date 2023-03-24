@@ -12,13 +12,13 @@ import xyz.nat1an.notebot.utils.NotebotUtils;
 
 import static xyz.nat1an.notebot.Notebot.mc;
 
-public class NotebotPlayCommand {
+public class NotebotStartCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
                                 CommandRegistryAccess commandRegistryAccess) {
         clientCommandSourceCommandDispatcher.register(
             ClientCommandManager.literal("notebot")
-                .then(ClientCommandManager.literal("play")
-                    .executes(NotebotPlayCommand::run)
+                .then(ClientCommandManager.literal("start")
+                    .executes(NotebotStartCommand::run)
                 )
         );
     }
