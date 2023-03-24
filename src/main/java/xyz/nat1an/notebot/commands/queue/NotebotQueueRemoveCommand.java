@@ -21,7 +21,7 @@ public class NotebotQueueRemoveCommand {
                         .then(
                             ClientCommandManager.argument(
                                 "index",
-                                IntegerArgumentType.integer(0, NotebotPlayer.queue.size() - 1)
+                                IntegerArgumentType.integer()
                             )
                         )
                     )
@@ -31,7 +31,15 @@ public class NotebotQueueRemoveCommand {
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
         int index = context.getArgument("index", Integer.class);
-        String name = NotebotPlayer.queue.remove(index);
+
+        String name;
+
+        try {
+            name = NotebotPlayer.queue.remove(index);
+        } catch (IndexOutOfBoundsException e) {
+            mc.player.sendMessage(Text.literal("§cIndex out of bounds."));
+            return 0;
+        }
 
         mc.player.sendMessage(Text.literal("§6Removed §a" + name + "§6 at §e" + index + "from the queue."));
 
