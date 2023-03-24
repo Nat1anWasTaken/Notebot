@@ -35,6 +35,7 @@ public class NotebotPlayer {
     /* The loaded song */
     public static Song song;
     public static List<String> trail = new ArrayList<>();
+    public static List<String> queue = new ArrayList<>();
 
     /* Map of noteblocks and their pitch around the player [blockpos:pitch] */
     private static Map<BlockPos, Integer> blockPitches = new HashMap<>();
@@ -129,7 +130,16 @@ public class NotebotPlayer {
 
         // Loop
         if (timer - 10 > song.length) {
-            if (autoPlay) {
+            if (queue.size() > 0) {
+                Path path = NotebotFileManager.getDir().resolve("notebot/" + queue.get(0));
+                song = NotebotUtils.parse(path);
+
+                queue.remove(0);
+
+                loadSong();
+
+                return;
+            } else if (autoPlay) {
                 if (autoPlayTrailLength > 0) {
                     trail.add(song.filename);
 
@@ -168,7 +178,6 @@ public class NotebotPlayer {
                     }
                     break;
                 }
-
             } else if (loop) {
                 timer = -10;
             }

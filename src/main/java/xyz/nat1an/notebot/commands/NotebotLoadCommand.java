@@ -21,7 +21,8 @@ public class NotebotLoadCommand {
         clientCommandSourceCommandDispatcher.register(
             ClientCommandManager.literal("notebot")
                 .then(ClientCommandManager.literal("load")
-                    .then(ClientCommandManager.argument("song", StringArgumentType.greedyString()).suggests(new SongSuggestionProvider())
+                    .then(ClientCommandManager.argument("song", StringArgumentType.greedyString())
+                        .suggests(new SongSuggestionProvider())
                         .executes(NotebotLoadCommand::run)
                     )
                 )
