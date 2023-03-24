@@ -15,9 +15,9 @@ public class QueueSuggestionProvider implements SuggestionProvider<FabricClientC
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
         String keyword = builder.getInput().substring(builder.getStart());
 
-        for (QueueItem i : NotebotPlayer.queue) {
-            if (i.filename.toLowerCase().contains(keyword.toLowerCase())) {
-                builder.suggest(i.filename);
+        for (String i : NotebotPlayer.queue) {
+            if (i.toLowerCase().contains(keyword.toLowerCase())) {
+                builder.suggest(i);
             }
         }
 

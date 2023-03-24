@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import xyz.nat1an.notebot.NotebotPlayer;
-import xyz.nat1an.notebot.suggestions.QueueSuggestionProvider;
 import xyz.nat1an.notebot.suggestions.SongSuggestionProvider;
 
 public class NotebotQueueAddCommand {
@@ -27,7 +26,8 @@ public class NotebotQueueAddCommand {
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-        // TODO: Append the song to the queue
+        NotebotPlayer.queue.add(context.getArgument("song", String.class));
+
         return 1;
     }
 }
