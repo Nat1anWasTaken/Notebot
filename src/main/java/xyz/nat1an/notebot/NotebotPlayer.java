@@ -130,11 +130,10 @@ public class NotebotPlayer {
 
         // Loop
         if (timer - 10 > song.length) {
-            if (queue.size() > 0) {
-                Path path = NotebotFileManager.getDir().resolve("notebot/" + queue.get(0));
-                song = NotebotUtils.parse(path);
+            if (!queue.isEmpty()) {
+                Path path = NotebotFileManager.getDir().resolve("songs/" + queue.remove(0));
 
-                queue.remove(0);
+                song = NotebotUtils.parse(path);
 
                 loadSong();
 
@@ -160,7 +159,7 @@ public class NotebotPlayer {
                         playing = false;
                     }
 
-                    File[] files = NotebotFileManager.getDir().resolve("notebot/").toFile().listFiles();
+                    File[] files = NotebotFileManager.getDir().resolve("songs/").toFile().listFiles();
                     Path path = files[ThreadLocalRandom.current().nextInt(files.length)].toPath();
 
                     song = NotebotUtils.parse(path);

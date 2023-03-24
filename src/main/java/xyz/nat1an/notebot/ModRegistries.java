@@ -6,6 +6,9 @@ import xyz.nat1an.notebot.commands.NotebotInfoCommand;
 import xyz.nat1an.notebot.commands.NotebotLoadCommand;
 import xyz.nat1an.notebot.commands.NotebotPlayCommand;
 import xyz.nat1an.notebot.commands.NotebotStopCommand;
+import xyz.nat1an.notebot.commands.queue.NotebotQueueAddCommand;
+import xyz.nat1an.notebot.commands.queue.NotebotQueueCommand;
+import xyz.nat1an.notebot.commands.queue.NotebotQueueRemoveCommand;
 
 public class ModRegistries {
     public static void registerModStuff() {
@@ -18,6 +21,10 @@ public class ModRegistries {
         ClientCommandRegistrationCallback.EVENT.register(NotebotLoadCommand::register);
         ClientCommandRegistrationCallback.EVENT.register(NotebotPlayCommand::register);
         ClientCommandRegistrationCallback.EVENT.register(NotebotStopCommand::register);
+
+        ClientCommandRegistrationCallback.EVENT.register(NotebotQueueAddCommand::register);
+        ClientCommandRegistrationCallback.EVENT.register(NotebotQueueRemoveCommand::register);
+        ClientCommandRegistrationCallback.EVENT.register(NotebotQueueCommand::register);
     }
 
     private static void registerEvents() {

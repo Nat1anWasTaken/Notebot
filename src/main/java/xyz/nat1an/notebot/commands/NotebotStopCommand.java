@@ -21,6 +21,8 @@ public class NotebotStopCommand {
     private static int run(CommandContext<FabricClientCommandSource> context) {
         NotebotPlayer.playing = false;
 
+        NotebotPlayer.song = null;
+
         return 1;
     }
 }
