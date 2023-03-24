@@ -13,11 +13,9 @@ import net.minecraft.util.math.Vec3d;
 import xyz.nat1an.notebot.utils.NotebotFileManager;
 import xyz.nat1an.notebot.utils.NotebotUtils;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static xyz.nat1an.notebot.Notebot.mc;
 
@@ -27,10 +25,6 @@ public class NotebotPlayer {
 
     /* Some settings */
     public static boolean loop = false;
-    public static boolean autoPlay = false;
-    public static boolean autoPlayFilter = true;
-    public static boolean autoPlayAntiDuplicate = true;
-    public static int autoPlayTrailLength = 5;
 
     /* The loaded song */
     public static Song song;
@@ -138,45 +132,6 @@ public class NotebotPlayer {
                 loadSong();
 
                 return;
-            } else if (autoPlay) {
-                if (autoPlayTrailLength > 0) {
-                    trail.add(song.filename);
-
-                    if (trail.size() > autoPlayTrailLength) {
-                        mc.player.sendMessage(Text.literal("§6The trail is full. Cleaning..."));
-                        trail.clear();
-                        trail.add(song.filename);
-                    }
-                    mc.player.sendMessage(Text.literal("§6The trail is now: §c" + trail.toString()));
-                }
-
-                int retryTimes = 0;
-
-                while (true) {
-                    retryTimes++;
-                    if (retryTimes > 20) {
-                        mc.player.sendMessage(Text.literal("§cCannot find any song matches the condition. Disabling notebot..."));
-                        playing = false;
-                    }
-
-                    File[] files = NotebotFileManager.getDir().resolve("songs/").toFile().listFiles();
-                    Path path = files[ThreadLocalRandom.current().nextInt(files.length)].toPath();
-
-                    song = NotebotUtils.parse(path);
-
-                    // TODO: Make this filter configurable
-                    if (autoPlayFilter) {
-                        if (!song.filename.startsWith("!")) continue;
-                    }
-
-                    if (autoPlayAntiDuplicate) {
-                        if (trail.contains(song.filename)) {
-                            mc.player.sendMessage(Text.literal("§6This song is played before. Picking a new one..."));
-                            continue;
-                        }
-                    }
-                    break;
-                }
             } else if (loop) {
                 timer = -10;
             }
