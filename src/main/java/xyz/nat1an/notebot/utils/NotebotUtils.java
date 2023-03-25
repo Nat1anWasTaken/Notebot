@@ -10,8 +10,8 @@ import net.minecraft.util.Util;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import xyz.nat1an.notebot.Notebot;
-import xyz.nat1an.notebot.NotebotPlayer.Note;
-import xyz.nat1an.notebot.NotebotPlayer.Song;
+import xyz.nat1an.notebot.types.Note;
+import xyz.nat1an.notebot.types.Song;
 
 import javax.sound.midi.*;
 import java.io.IOException;

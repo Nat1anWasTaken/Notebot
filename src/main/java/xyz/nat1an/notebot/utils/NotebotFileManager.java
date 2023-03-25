@@ -26,40 +26,10 @@ public class NotebotFileManager {
     }
 
     /**
-     * Gets the bleach directory in your minecraft folder.
+     * Gets the mod directory in your minecraft folder.
      **/
     public static Path getDir() {
         return dir;
-    }
-
-    /**
-     * Reads a file and returns a string of its contents.
-     **/
-    public static String readFile(String path) {
-        try {
-            return Files.readString(getDir().resolve(path));
-        } catch (NoSuchFileException ignored) {
-
-        } catch (Exception e) {
-            Notebot.LOGGER.error("Error Reading File: " + path, e);
-        }
-
-        return "";
-    }
-
-    /**
-     * Reads a file and returns a list of the lines.
-     **/
-    public static List<String> readFileLines(String path) {
-        try {
-            return Files.readAllLines(getDir().resolve(path));
-        } catch (NoSuchFileException ignored) {
-
-        } catch (Exception e) {
-            logger.error("Error Reading File: " + path, e);
-        }
-
-        return new ArrayList<>();
     }
 
     /**
@@ -73,38 +43,6 @@ public class NotebotFileManager {
             }
         } catch (Exception e) {
             logger.error("Error Creating File: " + path, e);
-        }
-    }
-
-    /**
-     * Creates a file, clears it if it already exists
-     **/
-    public static void createEmptyFile(String path) {
-        try {
-            createFile(path);
-
-            FileWriter writer = new FileWriter(getDir().resolve(path).toFile());
-            writer.write("");
-            writer.close();
-        } catch (Exception e) {
-            logger.error("Error Clearing/Creating File: " + path, e);
-        }
-    }
-
-    /**
-     * Adds a line to a file.
-     **/
-    public static void appendFile(String path, String content) {
-        try {
-            String fileContent = new String(Files.readAllBytes(getDir().resolve(path)));
-            FileWriter writer = new FileWriter(getDir().resolve(path).toFile(), true);
-            writer.write(
-                (fileContent.endsWith("\n") || !fileContent.contains("\n") ? "" : "\n")
-                    + content
-                    + (content.endsWith("\n") ? "" : "\n"));
-            writer.close();
-        } catch (Exception e) {
-            logger.error("Error Appending File: " + path, e);
         }
     }
 

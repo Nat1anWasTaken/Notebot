@@ -1,6 +1,5 @@
 package xyz.nat1an.notebot;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.block.NoteBlock;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.client.MinecraftClient;
@@ -10,6 +9,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import xyz.nat1an.notebot.types.Note;
+import xyz.nat1an.notebot.types.Song;
 import xyz.nat1an.notebot.utils.NotebotFileManager;
 import xyz.nat1an.notebot.utils.NotebotUtils;
 
@@ -36,6 +37,38 @@ public class NotebotPlayer {
     private static int timer = -10;
     private static int tuneDelay = 0;
 
+    public static int getNote(BlockPos pos) {
+        if (!isNoteblock(pos)) return -1;
+
+        return mc.world.getBlockState(pos).get(NoteBlock.NOTE);
+    }
+
+    public static void playBlock(BlockPos pos) {
+        if (!isNoteblock(pos)) return;
+
+        mc.interactionManager.attackBlock(pos, Direction.UP);
+        mc.player.swingHand(Hand.MAIN_HAND);
+    }
+
+    public static Instrument getInstrument(BlockPos pos) {
+        if (!isNoteblock(pos)) return Instrument.HARP;
+
+        return mc.world.getBlockState(pos).get(NoteBlock.INSTRUMENT);
+    }
+
+    public static boolean isNoteblock(BlockPos pos) {
+        // Checks if this block is a noteblock and the noteblock can be played
+        return mc.world.getBlockState(pos).getBlock() instanceof NoteBlock && mc.world.getBlockState(pos.up()).isAir();
+    }
+
+    public static void stop() {
+        playing = false;
+        song = null;
+        blockPitches.clear();
+        timer = -10;
+        tuneDelay = 0;
+    }
+
     public static boolean loadSong() {
         blockPitches.clear();
 
@@ -45,7 +78,7 @@ public class NotebotPlayer {
 
                 return false;
             } else if (song == null) {
-                mc.player.sendMessage(Text.literal("§6No Song Loaded!, Use §c/notebot §6select to select a song."));
+                mc.player.sendMessage(Text.literal("§6No song in queue!, Use §c/notebot queue add §6to add a song."));
 
                 return false;
             }
@@ -58,9 +91,9 @@ public class NotebotPlayer {
         BlockPos playerEyePos = new BlockPos((int) mc.player.getEyePos().x, (int) mc.player.getEyePos().y, (int) mc.player.getEyePos().z);
 
         List<BlockPos> noteblocks = BlockPos.streamOutwards(
-            playerEyePos, 4, 4, 4
+                playerEyePos, 4, 4, 4
         ).filter(
-            NotebotPlayer::isNoteblock).map(BlockPos::toImmutable
+                NotebotPlayer::isNoteblock).map(BlockPos::toImmutable
         ).toList();
 
         for (Note note : song.requirements) {
@@ -84,19 +117,24 @@ public class NotebotPlayer {
         return true;
     }
 
-    public static Instrument getInstrument(BlockPos pos) {
-        if (!isNoteblock(pos)) return Instrument.HARP;
-
-        return mc.world.getBlockState(pos).get(NoteBlock.INSTRUMENT);
-    }
-
-    public static boolean isNoteblock(BlockPos pos) {
-        // Checks if this block is a noteblock and the noteblock can be played
-        return mc.world.getBlockState(pos).getBlock() instanceof NoteBlock && mc.world.getBlockState(pos.up()).isAir();
-    }
-
     public static void onTick(MinecraftClient client) {
         if (!playing) return;
+
+        if (song == null) {
+            if (queue.isEmpty()) {
+                mc.player.sendMessage(Text.literal("§cYou have no songs in your queue!"));
+                stop();
+                return;
+            }
+
+            NotebotPlayer.song = NotebotUtils.parse(
+                    NotebotFileManager.getDir().resolve(
+                            "songs/" + NotebotPlayer.queue.remove(0)
+                    )
+            );
+
+            loadSong();
+        }
 
         // Tune Noteblocks
         for (Entry<BlockPos, Integer> e : blockPitches.entrySet()) {
@@ -114,7 +152,7 @@ public class NotebotPlayer {
                 int reqTunes = Math.min(25, neededNote - note);
                 for (int i = 0; i < reqTunes; i++)
                     mc.interactionManager.interactBlock(mc.player,
-                        Hand.MAIN_HAND, new BlockHitResult(Vec3d.ofCenter(e.getKey(), 1), Direction.UP, e.getKey(), true));
+                            Hand.MAIN_HAND, new BlockHitResult(Vec3d.ofCenter(e.getKey(), 1), Direction.UP, e.getKey(), true));
 
                 tuneDelay = 0;
 
@@ -124,16 +162,15 @@ public class NotebotPlayer {
 
         // Loop
         if (timer - 10 > song.length) {
-            if (!queue.isEmpty()) {
-                Path path = NotebotFileManager.getDir().resolve("songs/" + queue.remove(0));
-
-                song = NotebotUtils.parse(path);
-
-                loadSong();
-
-                return;
-            } else if (loop) {
+            if (loop) {
                 timer = -10;
+            } else if (!queue.isEmpty()) {
+                song = null;
+                return;
+            } else {
+                mc.player.sendMessage(Text.literal("§6The queue is empty, stopping..."));
+                stop();
+                return;
             }
         }
 
@@ -152,66 +189,6 @@ public class NotebotPlayer {
                 if (isNoteblock(e.getKey()) && (i.pitch == getNote(e.getKey())))
                     playBlock(e.getKey());
             }
-        }
-    }
-
-    public static int getNote(BlockPos pos) {
-        if (!isNoteblock(pos)) return -1;
-
-        return mc.world.getBlockState(pos).get(NoteBlock.NOTE);
-    }
-
-    public static void playBlock(BlockPos pos) {
-        if (!isNoteblock(pos)) return;
-
-        mc.interactionManager.attackBlock(pos, Direction.UP);
-        mc.player.swingHand(Hand.MAIN_HAND);
-    }
-
-    public static class Song {
-
-        public String filename;
-        public String name;
-        public String author;
-        public String format;
-
-        public Multimap<Integer, Note> notes;
-        public Set<Note> requirements = new HashSet<>();
-        public int length;
-
-        public Song(String filename, String name, String author, String format, Multimap<Integer, Note> notes) {
-            this.filename = filename;
-            this.name = name;
-            this.author = author;
-            this.format = format;
-            this.notes = notes;
-
-            notes.values().stream().distinct().forEach(requirements::add);
-            length = notes.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
-        }
-    }
-
-    public static class Note {
-
-        public int pitch;
-        public int instrument;
-
-        public Note(int pitch, int instrument) {
-            this.pitch = pitch;
-            this.instrument = instrument;
-        }
-
-        @Override
-        public int hashCode() {
-            return pitch * 31 + instrument;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof Note)) return false;
-
-            Note other = (Note) obj;
-            return instrument == other.instrument && pitch == other.pitch;
         }
     }
 

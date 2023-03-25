@@ -9,8 +9,8 @@ import net.minecraft.block.enums.Instrument;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import xyz.nat1an.notebot.NotebotPlayer;
 import xyz.nat1an.notebot.suggestions.SongSuggestionProvider;
+import xyz.nat1an.notebot.types.Song;
 import xyz.nat1an.notebot.utils.NotebotFileManager;
 import xyz.nat1an.notebot.utils.NotebotUtils;
 
@@ -31,7 +31,7 @@ public class NotebotInfoCommand {
         );
     }
 
-    public static String listRequirements(NotebotPlayer.Song song) {
+    public static String listRequirements(Song song) {
         StringBuilder result = new StringBuilder();
 
         result.append("§6Song: §e").append(song.name);
@@ -48,7 +48,7 @@ public class NotebotInfoCommand {
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-        NotebotPlayer.Song song = NotebotUtils.parse(
+        Song song = NotebotUtils.parse(
             NotebotFileManager.getDir().resolve(
                 "songs/" + context.getArgument("song", String.class)
             )
