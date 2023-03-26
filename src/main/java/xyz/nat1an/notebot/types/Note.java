@@ -1,7 +1,5 @@
 package xyz.nat1an.notebot.types;
 
-import xyz.nat1an.notebot.NotebotPlayer;
-
 public class Note {
 
     public int pitch;
