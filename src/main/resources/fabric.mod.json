@@ -11,7 +11,7 @@
     "homepage": "https://nat1an.xyz/",
     "sources": "https://github.com/Nat1anWasTaken/Notebot"
   },
-  "license": "CC0-1.0",
+  "license": "GNU General Public License",
   "icon": "assets/notebot/icon.png",
   "environment": "*",
   "entrypoints": {
