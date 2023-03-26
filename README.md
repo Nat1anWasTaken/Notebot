@@ -201,7 +201,7 @@ Project Link: [https://github.com/Nat1anWasTaken/Notebot](https://github.com/Nat
 
 [issues-url]: https://github.com/Nat1anWasTaken/Notebot/issues
 
-[license-shield]: https://img.shields.io/github/license/Nat1anWasTaken/Notebot.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Nat1anWasTaken/Notebot?style=for-the-badge
 
 [license-url]: https://github.com/Nat1anWasTaken/Notebot/blob/master/LICENSE
 
