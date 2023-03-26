@@ -49,7 +49,7 @@ public class NotebotQueueRemoveCommand {
             return 0;
         }
 
-        mc.player.sendMessage(Text.literal("§6Removed §a" + name + "§6 at §e" + index + "from the queue."));
+        mc.player.sendMessage(Text.literal("§6Removed §a" + name + "§6 at §e" + index + " §6from the queue."));
 
         return 1;
     }
