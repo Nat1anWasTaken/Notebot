@@ -24,19 +24,6 @@ public class NotebotStartCommand {
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-//        if (NotebotPlayer.song == null) {
-//            if (NotebotPlayer.queue.isEmpty()) {
-//                mc.player.sendMessage(Text.literal("§cYou need to load a song first!"));
-//                return 0;
-//            }
-//
-//
-//        }
-//
-//        if (!NotebotPlayer.loadSong()) {
-//            return 0;
-//        }
-
         NotebotPlayer.playing = true;
 
         return 1;
