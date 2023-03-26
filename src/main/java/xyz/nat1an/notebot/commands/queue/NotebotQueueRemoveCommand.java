@@ -20,9 +20,10 @@ public class NotebotQueueRemoveCommand {
                     .then(ClientCommandManager.literal("remove")
                         .then(
                             ClientCommandManager.argument(
-                                "index",
-                                IntegerArgumentType.integer()
-                            )
+                                    "index",
+                                    IntegerArgumentType.integer()
+                                )
+                                .executes(NotebotQueueRemoveCommand::run)
                         )
                     )
                 )
