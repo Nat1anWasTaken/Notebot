@@ -129,6 +129,7 @@ The jar will be in `build/libs/`
 
 - [x] Queue
 - [x] Multi-Instruments support
+- [x] Fairplay mode
 
 See the [open issues](https://github.com/Nat1anWasTaken/Notebot/issues) for a full list of proposed features (and known
 issues).
