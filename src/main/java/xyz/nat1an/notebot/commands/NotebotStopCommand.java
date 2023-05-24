@@ -15,21 +15,19 @@ import net.minecraft.command.CommandRegistryAccess;
 import xyz.nat1an.notebot.NotebotPlayer;
 
 public class NotebotStopCommand {
-    public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
-                                CommandRegistryAccess commandRegistryAccess) {
-        clientCommandSourceCommandDispatcher.register(
-            ClientCommandManager.literal("notebot")
-                .then(ClientCommandManager.literal("stop")
-                    .executes(NotebotStopCommand::run)
-                )
-        );
-    }
+  public static void register(
+      CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
+      CommandRegistryAccess commandRegistryAccess) {
+    clientCommandSourceCommandDispatcher.register(
+        ClientCommandManager.literal("notebot")
+            .then(ClientCommandManager.literal("stop").executes(NotebotStopCommand::run)));
+  }
 
-    private static int run(CommandContext<FabricClientCommandSource> context) {
-        NotebotPlayer.playing = false;
+  private static int run(CommandContext<FabricClientCommandSource> context) {
+    NotebotPlayer.playing = false;
 
-        NotebotPlayer.song = null;
+    NotebotPlayer.song = null;
 
-        return 1;
-    }
+    return 1;
+  }
 }

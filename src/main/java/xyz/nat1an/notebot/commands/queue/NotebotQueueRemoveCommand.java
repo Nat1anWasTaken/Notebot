@@ -7,6 +7,8 @@ You should have received a copy of the GNU General Public License along with Not
 
 package xyz.nat1an.notebot.commands.queue;
 
+import static xyz.nat1an.notebot.Notebot.mc;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -16,41 +18,37 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
 import xyz.nat1an.notebot.NotebotPlayer;
 
-import static xyz.nat1an.notebot.Notebot.mc;
-
 public class NotebotQueueRemoveCommand {
-    public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
-                                CommandRegistryAccess commandRegistryAccess) {
-        clientCommandSourceCommandDispatcher.register(
-            ClientCommandManager.literal("notebot")
-                .then(ClientCommandManager.literal("queue")
-                    .then(ClientCommandManager.literal("remove")
-                        .then(
-                            ClientCommandManager.argument(
-                                    "index",
-                                    IntegerArgumentType.integer()
-                                )
-                                .executes(NotebotQueueRemoveCommand::run)
-                        )
-                    )
-                )
-        );
+  public static void register(
+      CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
+      CommandRegistryAccess commandRegistryAccess) {
+    clientCommandSourceCommandDispatcher.register(
+        ClientCommandManager.literal("notebot")
+            .then(
+                ClientCommandManager.literal("queue")
+                    .then(
+                        ClientCommandManager.literal("remove")
+                            .then(
+                                ClientCommandManager.argument(
+                                        "index", IntegerArgumentType.integer())
+                                    .executes(NotebotQueueRemoveCommand::run)))));
+  }
+
+  private static int run(CommandContext<FabricClientCommandSource> context) {
+    int index = context.getArgument("index", Integer.class);
+
+    String name;
+
+    try {
+      name = NotebotPlayer.queue.remove(index);
+    } catch (IndexOutOfBoundsException e) {
+      mc.player.sendMessage(Text.literal("§cIndex out of bounds."));
+      return 0;
     }
 
-    private static int run(CommandContext<FabricClientCommandSource> context) {
-        int index = context.getArgument("index", Integer.class);
+    mc.player.sendMessage(
+        Text.literal("§6Removed §a" + name + "§6 at §e" + index + " §6from the queue."));
 
-        String name;
-
-        try {
-            name = NotebotPlayer.queue.remove(index);
-        } catch (IndexOutOfBoundsException e) {
-            mc.player.sendMessage(Text.literal("§cIndex out of bounds."));
-            return 0;
-        }
-
-        mc.player.sendMessage(Text.literal("§6Removed §a" + name + "§6 at §e" + index + " §6from the queue."));
-
-        return 1;
-    }
+    return 1;
+  }
 }
