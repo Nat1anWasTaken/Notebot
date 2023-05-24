@@ -193,7 +193,7 @@ public class NotebotPlayer {
 
         for (Entry<BlockPos, Integer> e : blockPitches.entrySet()) {
             for (Note i : curNotes) {
-                if (isNoteblock(e.getKey()) && (i.pitch == getNote(e.getKey())))
+                if (isNoteblock(e.getKey()) && (i.pitch == getNote(e.getKey())) && (i.instrument == getInstrument(e.getKey()).ordinal()))
                     playBlock(e.getKey());
             }
         }
