@@ -230,12 +230,16 @@ public class NotebotUtils {
                 // Iterate through layers
                 while (readShort(input) != 0) {
                     int instrument = input.read();
-                    if (instrument == 1) {
+                    if (instrument == 0) {
+                        instrument = 0;
+                    } else if (instrument == 1) {
                         instrument = 4;
                     } else if (instrument == 2) {
                         instrument = 1;
                     } else if (instrument == 3) {
                         instrument = 2;
+                    } else if (instrument == 4) {
+                        instrument = 3;
                     } else if (instrument == 5) {
                         instrument = 7;
                     } else if (instrument == 6) {
