@@ -7,9 +7,13 @@ You should have received a copy of the GNU General Public License along with Not
 
 package xyz.nat1an.notebot;
 
+import net.minecraft.block.Material;
+import net.minecraft.block.Block;
 import net.minecraft.block.NoteBlock;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -20,6 +24,7 @@ import xyz.nat1an.notebot.types.Note;
 import xyz.nat1an.notebot.types.Song;
 import xyz.nat1an.notebot.utils.NotebotFileManager;
 import xyz.nat1an.notebot.utils.NotebotUtils;
+
 
 import java.nio.file.Path;
 import java.util.*;
@@ -56,11 +61,83 @@ public class NotebotPlayer {
         mc.interactionManager.attackBlock(pos, Direction.UP);
         mc.player.swingHand(Hand.MAIN_HAND);
     }
-
+/*
     public static Instrument getInstrument(BlockPos pos) {
         if (!isNoteblock(pos)) return Instrument.HARP;
-
         return mc.world.getBlockState(pos).get(NoteBlock.INSTRUMENT);
+    }
+*/
+    public static Instrument getInstrumentUnderneath(BlockPos pos) {
+        if (!isNoteblock(pos)) return Instrument.HARP;
+
+        // Retrieve the block underneath
+        BlockPos posUnderneath = pos.down();
+        Block blockUnderneath = mc.world.getBlockState(posUnderneath).getBlock();
+
+        // Return the instrument associated with the block underneath
+        return blockToInstrument(blockUnderneath);
+    }
+
+    public static Instrument blockToInstrument(Block block) {
+
+        // Specific block checks
+        Identifier blockId = Registries.BLOCK.getId(block);
+        String blockIdString = blockId.toString();
+        Instrument instrument = Instrument.HARP;  // Default to Harp for any other block
+
+
+        if (blockIdString.equals("minecraft:dirt" ) || blockIdString.equals("minecraft:air")) {
+            return Instrument.HARP;
+        } else if (blockIdString.equals("minecraft:clay")) {
+            return Instrument.FLUTE;
+        } else if (blockIdString.equals("minecraft:gold_block")) {
+            return Instrument.BELL;
+        } else if (blockIdString.equals("minecraft:packed_ice")) {
+            return Instrument.CHIME;
+        } else if (blockIdString.equals("minecraft:bone_block")) {
+            return Instrument.XYLOPHONE;
+        } else if (blockIdString.equals("minecraft:iron_block")) {
+            return Instrument.IRON_XYLOPHONE;
+        } else if (blockIdString.equals("minecraft:soul_sand")) {
+            return Instrument.COW_BELL;
+        } else if (blockIdString.equals("minecraft:pumpkin")) {
+            return Instrument.DIDGERIDOO;
+        } else if (blockIdString.equals("minecraft:emerald_block")) {
+            return Instrument.BIT;
+        } else if (blockIdString.equals("minecraft:hay_block")) {
+            return Instrument.BANJO;
+        } else if (blockIdString.equals("minecraft:glowstone")) {
+            return Instrument.PLING;
+        } else if (blockIdString.equals("minecraft:sand") || blockIdString.equals("minecraft:gravel") || blockIdString.equals("minecraft:concrete_powder")) {
+            return Instrument.SNARE;
+        } else if (Arrays.asList("minecraft:stone", "minecraft:cobblestone", "minecraft:blackstone", "minecraft:netherrack", "minecraft:nylium", "minecraft:obsidian",
+                "minecraft:quartz", "minecraft:sandstone", "minecraft:ores", "minecraft:bricks", "minecraft:corals",
+                "minecraft:respawn_anchor", "minecraft:bedrock", "minecraft:concrete").contains(blockIdString)) {
+            return Instrument.BASEDRUM;
+        } else if (blockIdString.equals("minecraft:glass")) {
+            return Instrument.HAT;
+        }
+
+
+        Material material = block.getDefaultState().getMaterial();
+
+        // Check for blocks with specific materials
+        if (material.equals(Material.WOOD)) {
+            return Instrument.BASS;
+        }
+        if (material.equals(Material.WOOL)) {
+            return Instrument.GUITAR;
+        }
+        if (material.equals(Material.GLASS)) {
+            return Instrument.HAT;
+        }
+        if (material.equals(Material.STONE)) {
+            return Instrument.BASEDRUM;
+        }
+
+
+
+        return instrument;
     }
 
     public static boolean isNoteblock(BlockPos pos) {
@@ -98,27 +175,37 @@ public class NotebotPlayer {
         BlockPos playerEyePos = new BlockPos((int) mc.player.getEyePos().x, (int) mc.player.getEyePos().y, (int) mc.player.getEyePos().z);
 
         List<BlockPos> noteblocks = BlockPos.streamOutwards(
-                playerEyePos, 4, 4, 4
+                playerEyePos, 5, 5, 5
         ).filter(
                 NotebotPlayer::isNoteblock).map(BlockPos::toImmutable
         ).toList();
 
+        HashMap<Instrument, Integer> requiredInstruments = new HashMap<>();
+        HashMap<Instrument, Integer> foundInstruments = new HashMap<>();
+
         for (Note note : song.requirements) {
+            Instrument instrument = Instrument.values()[note.instrument];
+            requiredInstruments.put(instrument, requiredInstruments.getOrDefault(instrument, 0) + 1);
             for (BlockPos pos : noteblocks) {
                 if (blockPitches.containsKey(pos)) continue;
 
-                int instrument = getInstrument(pos).ordinal();
-                if (note.instrument == instrument && blockPitches.entrySet().stream().filter(e -> e.getValue() == note.pitch).noneMatch(e -> getInstrument(e.getKey()).ordinal() == instrument)) {
+                Instrument blockInstrument = getInstrumentUnderneath(pos);
+                if (note.instrument == blockInstrument.ordinal() && blockPitches.entrySet().stream().filter(e -> e.getValue() == note.pitch).noneMatch(e -> getInstrumentUnderneath(e.getKey()).ordinal() == blockInstrument.ordinal())) {
                     blockPitches.put(pos, note.pitch);
+                    foundInstruments.put(blockInstrument, foundInstruments.getOrDefault(blockInstrument, 0) + 1);
                     break;
                 }
             }
         }
 
-        int required = song.requirements.size();
+        for (Instrument instrument : requiredInstruments.keySet()) {
+            int requiredCount = requiredInstruments.get(instrument);
+            int foundCount = foundInstruments.getOrDefault(instrument, 0);
+            int missingCount = requiredCount - foundCount;
 
-        if (required > blockPitches.size()) {
-            mc.player.sendMessage(Text.literal("§6Warning: Missing §c" + (required - blockPitches.size()) + " §6Noteblocks"));
+            if (missingCount > 0) {
+                mc.player.sendMessage(Text.literal("§6Warning: Missing §c" + missingCount + " §6" + instrument + " Noteblocks"));
+            }
         }
 
         return true;
@@ -193,7 +280,7 @@ public class NotebotPlayer {
 
         for (Entry<BlockPos, Integer> e : blockPitches.entrySet()) {
             for (Note i : curNotes) {
-                if (isNoteblock(e.getKey()) && (i.pitch == getNote(e.getKey())) && (i.instrument == getInstrument(e.getKey()).ordinal()))
+                if (isNoteblock(e.getKey()) && (i.pitch == getNote(e.getKey())) && (i.instrument == getInstrumentUnderneath(e.getKey()).ordinal()))
                     playBlock(e.getKey());
             }
         }
