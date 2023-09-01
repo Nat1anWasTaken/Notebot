@@ -7,15 +7,15 @@ You should have received a copy of the GNU General Public License along with Not
 
 package xyz.nat1an.notebot;
 
-import net.minecraft.block.Material;
 import net.minecraft.block.Block;
 import net.minecraft.block.NoteBlock;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -25,8 +25,6 @@ import xyz.nat1an.notebot.types.Song;
 import xyz.nat1an.notebot.utils.NotebotFileManager;
 import xyz.nat1an.notebot.utils.NotebotUtils;
 
-
-import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -119,19 +117,19 @@ public class NotebotPlayer {
         }
 
 
-        Material material = block.getDefaultState().getMaterial();
+        BlockSoundGroup material = block.getDefaultState().getSoundGroup();
 
         // Check for blocks with specific materials
-        if (material.equals(Material.WOOD)) {
+        if (material.equals(BlockSoundGroup.WOOD)) {
             return Instrument.BASS;
         }
-        if (material.equals(Material.WOOL)) {
+        if (material.equals(BlockSoundGroup.WOOL)) {
             return Instrument.GUITAR;
         }
-        if (material.equals(Material.GLASS)) {
+        if (material.equals(BlockSoundGroup.GLASS)) {
             return Instrument.HAT;
         }
-        if (material.equals(Material.STONE)) {
+        if (material.equals(BlockSoundGroup.STONE)) {
             return Instrument.BASEDRUM;
         }
 
